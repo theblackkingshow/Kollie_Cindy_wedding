@@ -1,0 +1,13 @@
+# Private guest records and deployment secrets
+data/guests.json
+.env
+.env.*
+!.env.example
+
+# Generated dependencies and build artifacts
+**/node_modules/
+**/.sites-runtime/
+**/dist/
+**/.next/
+**/.wrangler/
+*.tsbuildinfo

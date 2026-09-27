@@ -1,0 +1,61 @@
+.wedding {
+  min-height: 100svh;
+  background: radial-gradient(circle at 50% 25%, #21475c 0%, #10283a 38%, #0b1e2d 100%);
+  color: #eee5d5;
+  overflow-x: hidden;
+  position: relative;
+}
+.wedding::before, .wedding::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  z-index: 4;
+  border: 1px solid rgba(214,184,120,.35);
+  inset: 15px;
+}
+.wedding::after { inset: 22px; border-color: rgba(214,184,120,.12); }
+.wedding .gate { min-height: 100svh; display: grid; place-items: center; padding: 65px 30px 45px; transition: opacity .7s, transform .7s, visibility .7s; }
+.wedding .gate-inner { text-align: center; width: min(100%, 430px); }
+.wedding .eyebrow { font-size: .95rem; letter-spacing: .12em; color: #d6b878; font-weight: 600; }
+.wedding .gate h1, .wedding .card h2 { font-family: Georgia, serif; font-weight: 400; }
+.wedding .gate h1 { font-size: clamp(2.7rem, 9vw, 4.4rem); line-height: 1; margin: 14px 0 4px; }
+.wedding .amp { color: #bd995a; font-style: italic; }
+.wedding .gate .date { font-family: Georgia, serif; font-size: 1.45rem; color: #c8beaa; margin: 10px 0 20px; }
+.wedding .envelope-button { border: 0; background: none; padding: 0; cursor: pointer; display: block; width: min(100%,290px); margin: auto; filter: drop-shadow(0 20px 28px rgba(0,0,0,.38)); transition: transform .45s, filter .45s; }
+.wedding .envelope-button:hover, .wedding .envelope-button:focus-visible { transform: translateY(-7px) scale(1.025); filter: drop-shadow(0 27px 35px rgba(0,0,0,.45)); }
+.wedding .envelope-button:focus-visible, .wedding a:focus-visible { outline: 3px solid #b3935b; outline-offset: 5px; }
+.wedding .envelope-button img { width: 100%; height: auto; display: block; }
+.wedding .gate.opened { opacity: 0; transform: scale(1.1); visibility: hidden; position: absolute; inset: 0; pointer-events: none; }
+.wedding .invitation { display: none; min-height: 100svh; padding: 50px 24px 75px; }
+.wedding .invitation.show { display: block; animation: wedding-reveal .85s ease both; }
+.wedding .card { width: min(100%,700px); margin: auto; padding: 50px clamp(25px,7vw,70px) 42px; background: linear-gradient(145deg,#fffcf4,#f5ead4); color: #273b42; text-align: center; box-shadow: 0 28px 75px rgba(0,0,0,.32); outline: 1px solid #c4a872; outline-offset: -14px; }
+.wedding .card::before { content: "✦"; display: block; color: #a9834b; font-size: 1.2rem; margin-bottom: 25px; }
+.wedding .card .eyebrow { color: #8a6738; }
+.wedding .card h2 { font-size: clamp(3rem,10vw,5rem); line-height: 1; margin: 18px 0 10px; color: #173747; overflow-wrap: anywhere; }
+.wedding .nickname { font-family: Georgia,serif; font-style: italic; font-size: 1.45rem; color: #9a753f; margin: 10px 0 24px; }
+.wedding .intro { font-family: Georgia,serif; font-size: 1.45rem; line-height: 1.35; max-width: 480px; margin: 0 auto 32px; }
+.wedding .rule { height: 1px; width: 65px; background: #b3935b; margin: 28px auto; }
+.wedding .event-date { font-family: Georgia,serif; font-size: 2.2rem; margin: 0 0 8px; color: #173747; }
+.wedding .place { font-size: 1.1rem; line-height: 1.7; margin: 8px 0; }
+.wedding .section-title { letter-spacing: .08em; color: #8a6738; font-weight: 600; font-size: 1rem; margin: 0 0 15px; }
+.wedding .detail { line-height: 1.65; margin: 8px 0; font-size: 1rem; white-space: pre-wrap; }
+.wedding .note { background: rgba(204,179,132,.18); padding: 17px 20px; line-height: 1.5; margin: 25px auto; max-width: 490px; }
+.wedding .faq { text-align: left; max-width: 490px; margin: 0 auto; }
+.wedding .faq h3:not(.section-title) { font-family: Georgia,serif; font-size: 1.55rem; font-weight: 600; color: #173747; margin: 22px 0 3px; }
+.wedding .faq p { font-size: 1rem; line-height: 1.55; margin: 0; white-space: pre-wrap; }
+.wedding .closing { font-family: Georgia,serif; font-size: 1.65rem; font-style: italic; color: #8a6738; margin: 32px 0; }
+.wedding #rsvp-form { scroll-margin-top: 24px; }
+.wedding .rsvp-page { min-height: 0; padding: 25px 10px; background: #102a3a; }
+.wedding .rsvp-card { box-shadow: none; }
+@keyframes wedding-reveal { from { opacity: 0; transform: translateY(25px) scale(.97); } to { opacity: 1; transform: none; } }
+@media (max-width: 500px) {
+  .wedding::before { inset: 9px; }
+  .wedding::after { inset: 15px; }
+  .wedding .invitation { padding: 26px 19px 55px; }
+  .wedding .card { padding-top: 40px; padding-bottom: 35px; outline-offset: -10px; }
+  .wedding .intro { font-size: 1.35rem; }
+  .wedding .envelope-button { width: min(100%,270px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wedding *, .wedding *::before, .wedding *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
