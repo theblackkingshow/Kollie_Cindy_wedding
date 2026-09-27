@@ -2,6 +2,8 @@
 
 Set Vercel's **Root Directory** to `primary-site` for the GitHub repository, then deploy the `main` branch.
 
+After changing the root directory, trigger a fresh deployment from `main`; Vercel only applies the new setting to deployments created afterward.
+
 Create a Neon Postgres database (or use another Postgres provider) and run `vercel-schema.sql` in its SQL console. In Vercel project settings, add these private Production and Preview environment variables:
 
 - `DATABASE_URL`: the Postgres connection string.
