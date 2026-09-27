@@ -1,4 +1,4 @@
-import { isAdmin } from "@/lib/guests";
+import { isAdmin } from "@/lib/admin-auth";
 import Dashboard from "./dashboard";
 import Link from "next/link";
 import type { Metadata } from "next";

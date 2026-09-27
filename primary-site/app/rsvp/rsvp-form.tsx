@@ -1,13 +1,67 @@
 "use client";
-import { useEffect,useState } from "react";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-type Response={name:string;seats:number;status:"pending"|"yes"|"no";attendees:number};
-export default function RSVPForm(){
-  const [code,setCode]=useState(()=>typeof window==="undefined"?"":new URLSearchParams(window.location.search).get("code")??""),[guest,setGuest]=useState<Response|null>(null),[status,setStatus]=useState<"yes"|"no">("yes"),[attendees,setAttendees]=useState(1),[message,setMessage]=useState(""),[error,setError]=useState(false),[busy,setBusy]=useState(false),[saved,setSaved]=useState(false);
-  useEffect(()=>{const c=new URLSearchParams(location.search).get("code");if(c)void lookup(c);},[]);
-  async function lookup(c:string){setBusy(true);setMessage("");setSaved(false);try{const r=await fetch(`/api/rsvp?code=${encodeURIComponent(c.trim())}`,{cache:"no-store"});const d=await r.json() as {error?:string;guest:Response};if(!r.ok)throw Error(d.error);setGuest(d.guest);setStatus(d.guest.status==="no"?"no":"yes");setAttendees(d.guest.status==="yes"?d.guest.attendees:1);}catch(e){setGuest(null);setMessage(e instanceof Error?e.message:"Invitation not found");setError(true);}finally{setBusy(false);}}
-  async function submit(e:React.FormEvent){e.preventDefault();setBusy(true);setMessage("");try{const r=await fetch("/api/rsvp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,status,attendees:status==="yes"?attendees:0})});const d=await r.json() as {error?:string};if(!r.ok)throw Error(d.error);setSaved(true);setError(false);setMessage(status==="yes"?"Thank you! Your attendance is confirmed.":"Thank you for letting us know. We’ll miss you.");}catch(e){setError(true);setMessage(e instanceof Error?e.message:"Could not save your reply");}finally{setBusy(false);}}
-  return <section className="rsvp-page"><section className="rsvp-card"><div className="kicker">Cindy & Dorbor</div><h1>Kindly reply</h1><p>Traditional wedding · 30 January 2027 · 4:00 pm<br/>Ellenbrook Community Centre Function Hall</p><div className="field"><label htmlFor="invite-code">Your personal invitation code</label><Input id="invite-code" autoComplete="off" value={code} onChange={e=>setCode(e.target.value)} placeholder="Paste your code here"/></div>{!guest?<Button disabled={busy||!code.trim()} onClick={()=>void lookup(code)} className="rsvp-submit">{busy?"Checking…":"Find invitation"}</Button>:<form onSubmit={submit}><p><strong>{guest.name}</strong><br/>Reserved places: {guest.seats}</p><fieldset style={{border:0,padding:0,margin:"20px 0"}}><legend style={{textAlign:"left",fontWeight:700}}>Will you attend?</legend><label className="rsvp-option"><input type="radio" name="reply" checked={status==="yes"} onChange={()=>setStatus("yes")}/>Joyfully accept</label><label className="rsvp-option"><input type="radio" name="reply" checked={status==="no"} onChange={()=>setStatus("no")}/>Regretfully decline</label></fieldset>{status==="yes"&&<div className="field"><label htmlFor="attendees">Number attending (maximum {guest.seats})</label><Input id="attendees" type="number" min={1} max={guest.seats} value={attendees} onChange={e=>setAttendees(Number(e.target.value))} required/></div>}<Button className="rsvp-submit" type="submit" disabled={busy}>{busy?"Saving…":saved?"Update response":"Send response"}</Button><p className="subtle">You can use this same link to update your reply.</p></form>}{message&&<div className={error?"error-box":"success-box"} role="status">{message}</div>}<p className="subtle" style={{fontSize:14,marginTop:25}}>Please reply by 28 November 2026.</p></section></section>;
+export default function RSVPForm() {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (busy || submitted) return;
+    setBusy(true);
+    setMessage("");
+    try {
+      const response = await fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, phone }),
+      });
+      const data = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(data.error);
+      setSubmitted(true);
+      setError(false);
+    } catch (cause) {
+      setError(true);
+      setMessage(cause instanceof Error ? cause.message : "Could not submit your reservation. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return <section className="rsvp-page">
+    <section className="rsvp-card" aria-labelledby="reservation-title">
+      <div className="kicker">Cindy &amp; Dorbor</div>
+      <h1 id="reservation-title">Reserve your place</h1>
+      <p>Traditional wedding · 30 January 2027 · 4:00 pm<br />Ellenbrook Community Centre Function Hall</p>
+      <p className="subtle">Please reserve by 28 November 2026.</p>
+      {submitted ? <div className="success-box" role="status">
+        <p>Reservation submitted successfully.</p>
+        <p>Your reservation is currently pending approval. Once your reservation has been approved, you will receive a confirmation email.</p>
+        <p>Your seat number will be sent to you one week before the event.</p>
+      </div> : <form onSubmit={submit}>
+        <div className="field">
+          <label htmlFor="reservation-name">Full Name</label>
+          <Input id="reservation-name" name="fullName" autoComplete="name" value={fullName} onChange={event => setFullName(event.target.value)} maxLength={120} required />
+        </div>
+        <div className="field">
+          <label htmlFor="reservation-email">Email Address</label>
+          <Input id="reservation-email" name="email" type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} maxLength={254} required />
+        </div>
+        <div className="field">
+          <label htmlFor="reservation-phone">Phone Number</label>
+          <Input id="reservation-phone" name="phone" type="tel" autoComplete="tel" value={phone} onChange={event => setPhone(event.target.value)} maxLength={50} required />
+        </div>
+        <Button className="rsvp-submit" type="submit" disabled={busy}>{busy ? "Submitting…" : "Submit Reservation"}</Button>
+      </form>}
+      {message && <div className={error ? "error-box" : "success-box"} role="alert">{message}</div>}
+    </section>
+  </section>;
 }

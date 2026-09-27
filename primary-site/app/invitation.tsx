@@ -42,7 +42,7 @@ export default function Invitation() {
         <h3 className="section-title">Dress code:</h3>
         <p className="detail">All  Men : african attire and a walking stick<br />All ladies: African attire with a gele or headtie.</p>
         <p className="note">NB:/ Strictly stick with the Dress code</p>
-        <p className="detail"><a href="#rsvp-form">RSVP by 28th November .</a></p>
+        <p className="detail"><a href="#rsvp-form">Reserve</a></p>
         <div className="rule" />
         <div className="faq">
           <h3 className="section-title">FAQs</h3>

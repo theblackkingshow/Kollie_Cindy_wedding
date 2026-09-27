@@ -1,4 +1,4 @@
-import { adminSessionToken, jsonError, sameOrigin, validAdminPassword } from "@/lib/guests";
+import { adminSessionToken, jsonError, sameOrigin, validAdminPassword } from "@/lib/admin-auth";
 
 export async function POST(request:Request) {
   if (!sameOrigin(request)) return jsonError("Invalid request origin",403);
